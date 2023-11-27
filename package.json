@@ -1,0 +1,14 @@
+{
+  "name": "test-with-cypress",
+  "version": "1.0.0",
+  "description": "This is a project for testing js application using cypress.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx cypress run"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^13.6.0"
+  }
+}
