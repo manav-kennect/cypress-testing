@@ -1,0 +1,13 @@
+{
+    "search-input-data": {
+        "singleItemCheck":["Paracetamol","paracetamol","1"],
+        "multipleItemsCheck": ["Bu","2","bu"],
+        "zeroItemCheck": ["afdsfyugsufhd","123366788","ABHJHCSJGAJ"]
+    },
+    
+    "create-bu-data": {
+        "displayName": "Animal",
+        "buID": "1200567",
+        "description": "This is an Animal BU"
+    } 
+}

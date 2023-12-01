@@ -1,0 +1,98 @@
+import testData from '../../../../fixtures/bu-management/home.json'
+
+describe("home-page-test-suite", () => {
+//    before(function() {
+//     cy.fixture("bu-management/home.json").then(function (data){ 
+//         this.testData = data
+//     })
+//   })
+  beforeEach(function () {
+    
+    cy.visit("/bu-management");
+  });
+
+  it("page-layout", function() {
+    //checks for the page title
+    cy.get(".pagetitle").should("have.text", "Business Unit Management");
+    // checks for the home page btn
+    cy.get(".account_btn").should("be.enabled");
+  });
+
+  it("search-input-text", function() {
+    cy.get("[cy-data=bu-search]")
+      .click()
+      .type("Search Text")
+      .should("contain.value", "Search Text");
+  });
+
+    it("single-searched-item-check", function () {
+        cy.wrap(testData['search-input-data']['singleItemCheck']).should('be.an','array')
+        Cypress.$.each(testData['search-input-data']['singleItemCheck'],(index,value) =>{
+            cy.get("[cy-data=bu-search]").click()
+            .type(value)
+            cy.get("[data-cy=bu-list-container] > [data-cy=0]").as('searchCard')
+            cy.get('@searchCard').should('exist').and('have.length', 1)
+            cy.get('@searchCard').find('.v-card-text').contains("Paracetamol")
+            cy.get("[cy-data=bu-search]").click().clear()
+        })
+    });
+
+    it("multiple-searched-item-check", function () {
+        cy.wrap(testData['search-input-data']['multipleItemsCheck']).should('be.an','array')
+        Cypress.$.each(testData['search-input-data']['multipleItemsCheck'],(index,value) =>{
+            cy.get("[cy-data=bu-search]").click()
+            .type(value)
+            cy.get("[data-cy=bu-list-container]").as('searchCard')
+            cy.get('@searchCard').children().should('exist').and('have.length.greaterThan', 1)
+            cy.get('@searchCard').first().find('.v-card-text').contains("BU CARD 2")
+            cy.get("[cy-data=bu-search]").click().clear()
+        })
+    });
+
+    it("null-searched-item-check", function () {
+        cy.wrap(testData['search-input-data']['zeroItemCheck']).should('be.an','array')
+        Cypress.$.each(testData['search-input-data']['zeroItemCheck'],(index,value) =>{
+            cy.get("[cy-data=bu-search]").click()
+            .type(value)
+            cy.get("[data-cy=bu-list-container]").as('searchCard')
+            cy.get('@searchCard').contains('No Results Found!')
+            cy.get("[cy-data=bu-search]").click().clear()
+        })
+    });
+
+    it.only("create-bu-test",function() {
+        cy.get('[data-cy=create-bu-btn]').as('createBUBtn')
+        cy.get("@createBUBtn").should('exist')
+        cy.get("@createBUBtn").click()
+        cy.get('[data-cy=create-bu-dialog]').should('exist').first().contains('Create New Business Unit')
+        cy.get('[data-cy=create-newbu-btn').should('exist')
+        //
+        cy.wrap(testData['create-bu-data']).should('exist')
+        cy.get('[cy-data=bu-display-name').click()
+            .type(testData['create-bu-data']["displayName"])
+        cy.get('[cy-data=bu-unit-id').click()
+            .type(testData['create-bu-data']["buID"])
+        cy.get('[cy-data=bu-description').click()
+            .type(testData['create-bu-data']["description"])
+        //
+        cy.get('[data-cy=create-newbu-btn').should('exist').click()
+        //
+        cy.get('[data-cy=create-bu-dialog]').should('not.exist')
+        // check for the new created bu
+        cy.get("[cy-data=bu-search]").click()
+            .type(testData['create-bu-data']["buID"])
+        cy.get("[data-cy=bu-list-container]").as('searchCard')
+        cy.get('@searchCard').should('exist')
+            .and('have.length', 1)
+            .and('contain',testData['create-bu-data']["buID"]) 
+        cy.get("[cy-data=bu-search]").click().clear()
+
+
+
+        
+        
+        
+
+
+    })
+});
