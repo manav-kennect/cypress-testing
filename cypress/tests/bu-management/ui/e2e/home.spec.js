@@ -1,13 +1,8 @@
+
 import testData from '../../../../fixtures/bu-management/home.json'
 
 describe("home-page-test-suite", () => {
-//    before(function() {
-//     cy.fixture("bu-management/home.json").then(function (data){ 
-//         this.testData = data
-//     })
-//   })
-  beforeEach(function () {
-    
+  before(function () {
     cy.visit("/bu-management");
   });
 
@@ -61,6 +56,7 @@ describe("home-page-test-suite", () => {
     });
 
     it.only("create-bu-test",function() {
+        cy.intercept('GET', 'http://localhost:8000/newBu',testData['create-bu-data'] ).as('getData');
         cy.get('[data-cy=create-bu-btn]').as('createBUBtn')
         cy.get("@createBUBtn").should('exist')
         cy.get("@createBUBtn").click()
@@ -76,6 +72,10 @@ describe("home-page-test-suite", () => {
             .type(testData['create-bu-data']["description"])
         //
         cy.get('[data-cy=create-newbu-btn').should('exist').click()
+        //intersepting http response
+        cy.wait('@getData').then(interception=>{
+            console.log(interception.response.body)
+        })
         //
         cy.get('[data-cy=create-bu-dialog]').should('not.exist')
         // check for the new created bu
@@ -86,13 +86,18 @@ describe("home-page-test-suite", () => {
             .and('have.length', 1)
             .and('contain',testData['create-bu-data']["buID"]) 
         cy.get("[cy-data=bu-search]").click().clear()
+    })
 
+    it("visit-bu-check-params",()=>{
+        cy.get("[data-cy=bu-list-container]").as('searchCard')
+        cy.get('@searchCard').children().should('exist').and('have.length.greaterThan', 1)
+        cy.wait(1000)
 
-
+        cy.get('@searchCard').children().first().click()
+        // cy.get('@buCard').click()
         
         
-        
-
 
     })
+
 });
