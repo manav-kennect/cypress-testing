@@ -2,7 +2,7 @@
 import testData from '../../../../fixtures/bu-management/home.json'
 
 describe("home-page-test-suite", () => {
-  before(function () {
+  beforeEach(function () {
     cy.visit("/bu-management");
   });
 
@@ -25,7 +25,7 @@ describe("home-page-test-suite", () => {
         Cypress.$.each(testData['search-input-data']['singleItemCheck'],(index,value) =>{
             cy.get("[cy-data=bu-search]").click()
             .type(value)
-            cy.get("[data-cy=bu-list-container] > [data-cy=0]").as('searchCard')
+            cy.get("[data-cy=bu-list-container] [data-cy=0]").as('searchCard')
             cy.get('@searchCard').should('exist').and('have.length', 1)
             cy.get('@searchCard').find('.v-card-text').contains("Paracetamol")
             cy.get("[cy-data=bu-search]").click().clear()
