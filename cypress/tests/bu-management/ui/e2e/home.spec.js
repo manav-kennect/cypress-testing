@@ -55,7 +55,7 @@ describe("home-page-test-suite", () => {
         })
     });
 
-    it.only("create-bu-test",function() {
+    it("create-bu-test",function() {
         cy.intercept('GET', 'http://localhost:8000/newBu',testData['create-bu-data'] ).as('getData');
         cy.get('[data-cy=create-bu-btn]').as('createBUBtn')
         cy.get("@createBUBtn").should('exist')
@@ -95,9 +95,40 @@ describe("home-page-test-suite", () => {
 
         cy.get('@searchCard').children().first().click()
         // cy.get('@buCard').click()
-        
+    })
+
+    it.only("remove-managers-test",()=>{
+        cy.get("[data-cy=bu-list-container]").as('searchCard')
+        cy.get('@searchCard').children().should('exist').and('have.length.greaterThan', 1)
+        cy.wait(1000)
+
+        cy.get('@searchCard').children().first().click()
+        cy.get("[data-cy=manager-selection-filter]").click()
+        cy.get("[data-cy=manager-selection-filter-list]").children().should(($el)=>{
+         let filters = $el.map((i, el) => {
+                return Cypress.$(el).text()
+              })
+              console.log(filters,typeof(filters))
+              expect(filters.get()).to.deep.equal( ['All Managers','Employee Managers','Adhoc Managers'])
+        })
+        cy.get("[data-cy=manager-selection-filter-list]").children().first().next().click()
+        cy.get("[data-cy=list-of-managers]").its('length').then(count=>{
+            Cypress._.times(count, (i) => {
+                cy.get(`[data-cy=select-manager-${0}]`).click().then(() => {
+                    cy.get("[data-cy=remove-managers]").click();
+                  })
+                  .then(() => {
+                    cy.get("[data-cy=remove-managers-btn]").should('exist');
+                  })
+                  .then(() => {
+                    cy.get("[data-cy=remove-managers-btn]").click();
+                  });
+              })
+        })
         
 
+          
+          
     })
 
 });
